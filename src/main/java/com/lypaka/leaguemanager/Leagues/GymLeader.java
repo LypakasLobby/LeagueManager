@@ -17,10 +17,10 @@ public class GymLeader extends LeagueMember {
     private final String gymName;
     private final String gymTheme;
 
-    public GymLeader (GymBadge badge, String gymDisplayIcon, String gymName, List<String> gymDisplayLore, String gymTheme,
+    public GymLeader (GymBadge badge, String gymDisplayIcon, String gymName, List<String> gymDisplayLore, String gymTheme, Location location,
                       List<String> permissionsNeededToBattle, String npcLocation, String playerUUID, List<String> commandRewards) {
 
-        super(permissionsNeededToBattle, npcLocation, playerUUID, commandRewards);
+        super(location, permissionsNeededToBattle, npcLocation, playerUUID, commandRewards);
         this.badge = badge;
         this.gymDisplayIcon = gymDisplayIcon;
         this.gymName = gymName;

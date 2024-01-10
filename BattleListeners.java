@@ -191,7 +191,7 @@ public class BattleListeners {
         ServerPlayerEntity player = event.player;
         Region region = RegionHandler.getRegionAtPlayer(player);
         if (region == null) return;
-        if (!LeagueHandler.regionE4MemberMap.containsKey(region.getName()) && !LeagueHandler.regionE4MemberMap.containsKey(region.getName())) return;
+        if (!LeagueHandler.regionE4MemberMap.containsKey(region.getName()) && !LeagueHandler.regionGymLeaderMap.containsKey(region.getName())) return;
 
         if (LeagueHandler.isEntityALeagueMember(region.getName(), trainer)) {
 

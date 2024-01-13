@@ -7,9 +7,9 @@ public class E4Member extends LeagueMember {
     private final String memberName;
     private final boolean isChampion;
 
-    public E4Member (String memberName, boolean isChampion, Location location, List<String> permissionsNeededToBattle, String npcLocation, String playerUUID, List<String> commandRewards) {
+    public E4Member (String memberName, boolean isChampion, Location location, List<String> permissionsNeededToBattle, String npcLocation, int orderNumber, String playerUUID, List<String> commandRewards) {
 
-        super(location, permissionsNeededToBattle, npcLocation, playerUUID, commandRewards);
+        super(location, permissionsNeededToBattle, npcLocation, orderNumber, playerUUID, commandRewards);
         this.isChampion = isChampion;
         this.memberName = memberName;
 

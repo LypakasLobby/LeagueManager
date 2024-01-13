@@ -38,7 +38,7 @@ public class LeagueManager {
     public LeagueManager() throws IOException, ObjectMappingException {
 
         Path dir = ConfigUtils.checkDir(Paths.get("./config/leaguemanager"));
-        String[] files = new String[]{"leaguemanager.conf"};
+        String[] files = new String[]{"leaguemanager.conf", "guis.conf"};
         configManager = new BasicConfigManager(files, dir, LeagueManager.class, MOD_NAME, MOD_ID, logger);
         configManager.init();
         playerConfigManager = new PlayerConfigManager("account.conf", "player-accounts", dir, LeagueManager.class, MOD_NAME, MOD_ID, logger);

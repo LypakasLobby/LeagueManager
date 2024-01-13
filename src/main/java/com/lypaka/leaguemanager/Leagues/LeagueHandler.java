@@ -13,10 +13,7 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LeagueHandler {
 
@@ -24,7 +21,8 @@ public class LeagueHandler {
     public static Map<String, ComplexConfigManager> leagueMap;
     public static Map<String, List<GymLeader>> regionGymLeaderMap;
     public static Map<String, List<E4Member>> regionE4MemberMap;
-    public static Map<String, Map<String, String>> nameMap;
+    public static Map<String, List<GymLeader>> gymsInOrder;
+    public static Map<String, List<E4Member>> e4MembersInOrder;
 
     public static void loadGymsAndLeagues() throws ObjectMappingException {
 
@@ -32,15 +30,20 @@ public class LeagueHandler {
         leagueMap = new HashMap<>();
         regionGymLeaderMap = new HashMap<>();
         regionE4MemberMap = new HashMap<>();
+        gymsInOrder = new HashMap<>();
+        e4MembersInOrder = new HashMap<>();
         for (Map.Entry<String, List<String>> entry : ConfigGetters.gyms.entrySet()) {
 
+            List<GymLeader> inOrder = new ArrayList<>();
             String regionName = entry.getKey();
             List<String> gyms = entry.getValue();
             Path dir = ConfigUtils.checkDir(Paths.get("./config/leaguemanager/gyms"));
             ComplexConfigManager gcm = new ComplexConfigManager(gyms, regionName, "gymSettings.conf", dir, LeagueManager.class, LeagueManager.MOD_NAME, LeagueManager.MOD_ID, LeagueManager.logger, true);
             gcm.init();
 
-            List<GymLeader> leaders = new ArrayList<>();
+            Map<Integer, UUID> m1 = new HashMap<>();
+            Map<UUID, GymLeader> m2 = new HashMap<>();
+            List<GymLeader> leaders = new ArrayList<>(gyms.size());
             for (int i = 0; i < gyms.size(); i++) {
 
                 String badgeDisplayName = gcm.getConfigNode(i, "Badge", "Display-Name").getString();
@@ -51,6 +54,7 @@ public class LeagueHandler {
                 String gymDisplayIcon = gcm.getConfigNode(i, "Gym-Display-Icon").getString();
                 List<String> gymLore = gcm.getConfigNode(i, "Gym-Info-Lore").getList(TypeToken.of(String.class));
                 String gymName = gcm.getConfigNode(i, "Gym-Name").getString();
+                int gymNumber = gcm.getConfigNode(i, "Gym-Number").getInt();
                 String gymTheme = gcm.getConfigNode(i, "Gym-Theme").getString();
 
                 int maxX = gcm.getConfigNode(i, "Gym-Location", "Max-X").getInt();
@@ -67,17 +71,32 @@ public class LeagueHandler {
                 String playerUUID = gcm.getConfigNode(i, "Player-UUID").getString();
                 List<String> commandRewards = gcm.getConfigNode(i, "Rewards").getList(TypeToken.of(String.class));
 
-                GymLeader gymLeader = new GymLeader(badge, gymDisplayIcon, gymName, gymLore, gymTheme, gymLocation, permissionsNeededToBattle, npcLocation, playerUUID, commandRewards);
+                GymLeader gymLeader = new GymLeader(badge, gymDisplayIcon, gymName, gymLore, gymTheme, gymLocation, permissionsNeededToBattle, npcLocation, gymNumber, playerUUID, commandRewards);
                 leaders.add(gymLeader);
+                UUID uuid = UUID.randomUUID();
+                m1.put(gymNumber, uuid);
+                m2.put(uuid, gymLeader);
 
             }
 
+            List<Integer> numbers = new ArrayList<>(m1.keySet());
+            Collections.sort(numbers);
+            for (int i = 0; i < numbers.size(); i++) {
+
+                int number = numbers.get(i);
+                UUID uuid = m1.get(number);
+                GymLeader l = m2.get(uuid);
+                inOrder.add(i, l);
+
+            }
+            gymsInOrder.put(regionName, inOrder);
             regionGymLeaderMap.put(regionName, leaders);
 
         }
 
         for (Map.Entry<String, List<String>> entry : ConfigGetters.leagues.entrySet()) {
 
+            List<E4Member> inOrder = new ArrayList<>();
             String regionName = entry.getKey();
             List<String> leagues = entry.getValue();
             Path dir = ConfigUtils.checkDir(Paths.get("./config/leaguemanager/leagues"));
@@ -85,6 +104,9 @@ public class LeagueHandler {
             lgm.init();
 
             List<E4Member> e4Members = new ArrayList<>();
+            Map<Integer, UUID> m1 = new HashMap<>();
+            Map<UUID, E4Member> m2 = new HashMap<>();
+            List<E4Member> eMembers = new ArrayList<>(leagues.size());
             for (int i = 0; i < leagues.size(); i++) {
 
                 String memberName = leagues.get(i);
@@ -101,14 +123,29 @@ public class LeagueHandler {
 
                 List<String> permissionsNeededToBattle = lgm.getConfigNode(i, "Permissions").getList(TypeToken.of(String.class));
                 String npcLocation = lgm.getConfigNode(i, "NPC-Location").getString();
+                int orderNumber = lgm.getConfigNode(i, "Number").getInt();
                 String playerUUID = lgm.getConfigNode(i, "Player-UUID").getString();
                 List<String> commandRewards = lgm.getConfigNode(i, "Rewards").getList(TypeToken.of(String.class));
 
-                E4Member e4Member = new E4Member(memberName, isChampion, leagueLocation, permissionsNeededToBattle, npcLocation, playerUUID, commandRewards);
+                E4Member e4Member = new E4Member(memberName, isChampion, leagueLocation, permissionsNeededToBattle, npcLocation, orderNumber, playerUUID, commandRewards);
                 e4Members.add(e4Member);
+                UUID uuid = UUID.randomUUID();
+                m1.put(orderNumber, uuid);
+                m2.put(uuid, e4Member);
 
             }
 
+            List<Integer> numbers = new ArrayList<>(m1.keySet());
+            Collections.sort(numbers);
+            for (int i = 0; i < numbers.size(); i++) {
+
+                int number = numbers.get(i);
+                UUID uuid = m1.get(number);
+                E4Member e = m2.get(uuid);
+                inOrder.add(i, e);
+
+            }
+            e4MembersInOrder.put(regionName, inOrder);
             regionE4MemberMap.put(regionName, e4Members);
 
         }

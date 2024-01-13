@@ -24,6 +24,7 @@ public class LeagueHandler {
     public static Map<String, ComplexConfigManager> leagueMap;
     public static Map<String, List<GymLeader>> regionGymLeaderMap;
     public static Map<String, List<E4Member>> regionE4MemberMap;
+    public static Map<String, Map<String, String>> nameMap;
 
     public static void loadGymsAndLeagues() throws ObjectMappingException {
 
@@ -86,6 +87,7 @@ public class LeagueHandler {
             List<E4Member> e4Members = new ArrayList<>();
             for (int i = 0; i < leagues.size(); i++) {
 
+                String memberName = leagues.get(i);
                 boolean isChampion = lgm.getConfigNode(i, "Is-Champion").getBoolean();
 
                 int maxX = lgm.getConfigNode(i, "Room-Location", "Max-X").getInt();
@@ -102,7 +104,7 @@ public class LeagueHandler {
                 String playerUUID = lgm.getConfigNode(i, "Player-UUID").getString();
                 List<String> commandRewards = lgm.getConfigNode(i, "Rewards").getList(TypeToken.of(String.class));
 
-                E4Member e4Member = new E4Member(isChampion, leagueLocation, permissionsNeededToBattle, npcLocation, playerUUID, commandRewards);
+                E4Member e4Member = new E4Member(memberName, isChampion, leagueLocation, permissionsNeededToBattle, npcLocation, playerUUID, commandRewards);
                 e4Members.add(e4Member);
 
             }

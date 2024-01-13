@@ -4,6 +4,7 @@ import com.lypaka.areamanager.Regions.Region;
 import com.lypaka.areamanager.Regions.RegionHandler;
 import com.lypaka.leaguemanager.API.MemberChallengeEvent;
 import com.lypaka.leaguemanager.API.MemberDefeatEvent;
+import com.lypaka.leaguemanager.Accounts.AccountHandler;
 import com.lypaka.leaguemanager.Leagues.*;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;
@@ -15,7 +16,6 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.TrainerParticipant;
 import com.pixelmonmod.pixelmon.entities.npcs.NPCTrainer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -191,7 +191,7 @@ public class BattleListeners {
         ServerPlayerEntity player = event.player;
         Region region = RegionHandler.getRegionAtPlayer(player);
         if (region == null) return;
-        if (!LeagueHandler.regionE4MemberMap.containsKey(region.getName()) && !LeagueHandler.regionE4MemberMap.containsKey(region.getName())) return;
+        if (!LeagueHandler.regionE4MemberMap.containsKey(region.getName()) && !LeagueHandler.regionGymLeaderMap.containsKey(region.getName())) return;
 
         if (LeagueHandler.isEntityALeagueMember(region.getName(), trainer)) {
 
@@ -203,6 +203,12 @@ public class BattleListeners {
                 GymLeader gymLeader = (GymLeader) leagueMember;
                 GymBadge badge = gymLeader.getBadge();
                 player.addItemStackToInventory(badge.getBadgeItem());
+                AccountHandler.markGymBeaten(player, region.getName(), gymLeader.getGymName());
+
+            } else {
+
+                E4Member member = (E4Member) leagueMember;
+                AccountHandler.markE4MemberBeaten(player, region.getName(), member.getMemberName());
 
             }
             List<String> rewardCommands = leagueMember.getCommandRewards();
@@ -235,7 +241,7 @@ public class BattleListeners {
 
         Region region = RegionHandler.getRegionAtPlayer(p1);
         if (region == null) return;
-        if (!LeagueHandler.regionE4MemberMap.containsKey(region.getName()) && !LeagueHandler.regionE4MemberMap.containsKey(region.getName())) return;
+        if (!LeagueHandler.regionE4MemberMap.containsKey(region.getName()) && !LeagueHandler.regionGymLeaderMap.containsKey(region.getName())) return;
 
         LeagueMember member = LeagueHandler.getFromEntity(region.getName(), p1);
         ServerPlayerEntity challenger = null;
@@ -302,6 +308,12 @@ public class BattleListeners {
                     GymLeader gymLeader = (GymLeader) member;
                     GymBadge badge = gymLeader.getBadge();
                     challenger.addItemStackToInventory(badge.getBadgeItem());
+                    AccountHandler.markGymBeaten(challenger, region.getName(), gymLeader.getGymName());
+
+                } else {
+
+                    E4Member e4Member = (E4Member) member;
+                    AccountHandler.markE4MemberBeaten(challenger, region.getName(), e4Member.getMemberName());
 
                 }
                 List<String> rewardCommands = member.getCommandRewards();

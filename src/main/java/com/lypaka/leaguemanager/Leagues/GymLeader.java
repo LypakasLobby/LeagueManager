@@ -41,6 +41,12 @@ public class GymLeader extends LeagueMember {
 
     }
 
+    public String getGymName() {
+
+        return this.gymName;
+
+    }
+
     public List<String> getGymDisplayLore() {
 
         return this.gymDisplayLore;

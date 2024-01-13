@@ -2,6 +2,7 @@ package com.lypaka.leaguemanager;
 
 import com.lypaka.lypakautils.ConfigurationLoaders.BasicConfigManager;
 import com.lypaka.lypakautils.ConfigurationLoaders.ConfigUtils;
+import com.lypaka.lypakautils.ConfigurationLoaders.PlayerConfigManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,6 +33,7 @@ public class LeagueManager {
     public static final String MOD_NAME = "LeagueManager";
     public static final Logger logger = LogManager.getLogger(MOD_NAME);
     public static BasicConfigManager configManager;
+    public static PlayerConfigManager playerConfigManager;
 
     public LeagueManager() throws IOException, ObjectMappingException {
 
@@ -39,6 +41,8 @@ public class LeagueManager {
         String[] files = new String[]{"leaguemanager.conf"};
         configManager = new BasicConfigManager(files, dir, LeagueManager.class, MOD_NAME, MOD_ID, logger);
         configManager.init();
+        playerConfigManager = new PlayerConfigManager("account.conf", "player-accounts", dir, LeagueManager.class, MOD_NAME, MOD_ID, logger);
+        playerConfigManager.init();
         ConfigGetters.load();
 
     }

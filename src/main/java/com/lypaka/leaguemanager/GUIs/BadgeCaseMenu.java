@@ -27,7 +27,7 @@ public class BadgeCaseMenu {
         ChestTemplate template = ChestTemplate.builder(ConfigGetters.badgeCaseRows).build();
         GooeyPage page = GooeyPage.builder()
                 .template(template)
-                .title(FancyText.getFormattedString(ConfigGetters.badgeCaseDisplayName))
+                .title(FancyText.getFormattedString(ConfigGetters.badgeCaseDisplayName.replace("%region%", region)))
                 .build();
 
         List<Integer> allGUISlots = new ArrayList<>(ConfigGetters.badgeCaseRows * 9);

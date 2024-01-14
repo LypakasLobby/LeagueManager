@@ -23,6 +23,14 @@ public class ConfigGetters {
     public static List<String> badgeCaseHasNotBeatenLore;
     public static int badgeCaseRows;
     public static String badgeCaseDisplayName;
+    public static String e4BorderID;
+    public static int[] e4BorderSlots;
+    public static String e4EmptySlotID;
+    public static String e4EmptyDisplayName;
+    public static List<String> e4HasBeatenLore;
+    public static List<String> e4HasNotBeatenLore;
+    public static int e4Rows;
+    public static String e4Title;
 
     public static void load() throws ObjectMappingException {
 
@@ -47,6 +55,20 @@ public class ConfigGetters {
         badgeCaseHasNotBeatenLore = LeagueManager.configManager.getConfigNode(1, "Badge-Case-Menu", "Lore", "Has-Not-Beaten-Gym").getList(TypeToken.of(String.class));
         badgeCaseRows = LeagueManager.configManager.getConfigNode(1, "Badge-Case-Menu", "Settings", "Rows").getInt();
         badgeCaseDisplayName = LeagueManager.configManager.getConfigNode(1, "Badge-Case-Menu", "Settings", "Title").getString();
+        e4BorderID = LeagueManager.configManager.getConfigNode(1, "E4-Menu", "Border", "ID").getString();
+        String[] e4Slots = LeagueManager.configManager.getConfigNode(1, "E4-Menu", "Border", "Slots").getString().split(", ");
+        e4BorderSlots = new int[e4Slots.length];
+        for (int i = 0; i < e4Slots.length; i++) {
+
+            e4BorderSlots[i] = Integer.parseInt(e4Slots[i]);
+
+        }
+        e4EmptySlotID = LeagueManager.configManager.getConfigNode(1, "E4-Menu", "Empty-Slots", "ID").getString();
+        e4EmptyDisplayName = LeagueManager.configManager.getConfigNode(1, "E4-Menu", "Empty-Slots", "Display-Name").getString();
+        e4HasBeatenLore = LeagueManager.configManager.getConfigNode(1, "E4-Menu", "Lore", "Has-Beaten").getList(TypeToken.of(String.class));
+        e4HasNotBeatenLore = LeagueManager.configManager.getConfigNode(1, "E4-Menu", "Lore", "Has-Not-Beaten").getList(TypeToken.of(String.class));
+        e4Rows = LeagueManager.configManager.getConfigNode(1, "E4-Menu", "Settings", "Rows").getInt();
+        e4Title = LeagueManager.configManager.getConfigNode(1, "E4-Menu", "Settings", "Title").getString();
 
     }
 

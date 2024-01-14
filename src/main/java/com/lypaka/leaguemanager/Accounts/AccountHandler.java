@@ -2,6 +2,7 @@ package com.lypaka.leaguemanager.Accounts;
 
 import com.google.common.reflect.TypeToken;
 import com.lypaka.leaguemanager.LeagueManager;
+import com.lypaka.leaguemanager.Leagues.E4Member;
 import com.lypaka.leaguemanager.Leagues.GymLeader;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -66,6 +67,13 @@ public class AccountHandler {
 
         Account account = accountMap.get(player.getUniqueID());
         return account.getBeatenGyms().get(region).contains(leader.getGymName());
+
+    }
+
+    public static boolean hasBeatenMember (ServerPlayerEntity player, String region, E4Member member) {
+
+        Account account = accountMap.get(player.getUniqueID());
+        return account.getBeatenE4Members().get(region).contains(member.getMemberName());
 
     }
 

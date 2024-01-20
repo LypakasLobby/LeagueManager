@@ -48,4 +48,12 @@ public class ConnectionListener {
 
     }
 
+    @SubscribeEvent
+    public void onLeave (PlayerEvent.PlayerLoggedOutEvent event) {
+
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        AccountHandler.removeAccount(player);
+
+    }
+
 }

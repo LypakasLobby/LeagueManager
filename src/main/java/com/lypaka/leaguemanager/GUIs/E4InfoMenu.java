@@ -7,7 +7,6 @@ import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.lypaka.leaguemanager.Accounts.AccountHandler;
 import com.lypaka.leaguemanager.ConfigGetters;
 import com.lypaka.leaguemanager.Leagues.E4Member;
-import com.lypaka.leaguemanager.Leagues.GymLeader;
 import com.lypaka.leaguemanager.Leagues.LeagueHandler;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.MiscHandlers.ItemStackBuilder;
@@ -56,10 +55,16 @@ public class E4InfoMenu {
 
             E4Member e4Member = members.get(index);
             index++;
-            ItemStack item = ItemStackBuilder.buildFromStringID(e4Member.getDisplayID());
+            ItemStack item = ItemStackBuilder.buildFromStringID(e4Member.getDisplayID()).setDisplayName(FancyText.getFormattedText(e4Member.getDisplayName()));
 
             List<String> itemLore = AccountHandler.hasBeatenMember(player, region, e4Member) ? ConfigGetters.e4HasBeatenLore : ConfigGetters.e4HasNotBeatenLore;
             ListNBT lore = new ListNBT();
+            for (String s : e4Member.getLore()) {
+
+                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+
+            }
+            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(""))));
             for (String s : itemLore) {
 
                 lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));

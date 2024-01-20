@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Specification-Title: leaguemanager
+Specification-Version: 1
+Implementation-Title: LeagueManager
+Implementation-Version: 1.16.5-0.0.2-ALPHA
+Implementation-Timestamp: 2024-01-20T11:41:16-0600
+

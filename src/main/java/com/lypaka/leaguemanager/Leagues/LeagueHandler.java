@@ -110,6 +110,9 @@ public class LeagueHandler {
             for (int i = 0; i < leagues.size(); i++) {
 
                 String memberName = leagues.get(i);
+                String displayID = lgm.getConfigNode(i, "Display", "ID").getString();
+                List<String> lore = lgm.getConfigNode(i, "Display", "Lore").getList(TypeToken.of(String.class));
+                String displayName = lgm.getConfigNode(i, "Display", "Name").getString();
                 boolean isChampion = lgm.getConfigNode(i, "Is-Champion").getBoolean();
 
                 int maxX = lgm.getConfigNode(i, "Room-Location", "Max-X").getInt();
@@ -127,7 +130,7 @@ public class LeagueHandler {
                 String playerUUID = lgm.getConfigNode(i, "Player-UUID").getString();
                 List<String> commandRewards = lgm.getConfigNode(i, "Rewards").getList(TypeToken.of(String.class));
 
-                E4Member e4Member = new E4Member(memberName, isChampion, leagueLocation, permissionsNeededToBattle, npcLocation, orderNumber, playerUUID, commandRewards);
+                E4Member e4Member = new E4Member(memberName, displayID, lore, displayName, isChampion, leagueLocation, permissionsNeededToBattle, npcLocation, orderNumber, playerUUID, commandRewards);
                 e4Members.add(e4Member);
                 UUID uuid = UUID.randomUUID();
                 m1.put(orderNumber, uuid);

@@ -56,8 +56,14 @@ public class BadgeCaseMenu {
             index++;
             ItemStack badge = leader.getBadge().getBadgeItem();
 
-            List<String> itemLore = AccountHandler.hasBeatenGym(player, region, leader) ? ConfigGetters.badgeCaseHasBeatenLore : ConfigGetters.badgeCaseHasNotBeatenLore;
             ListNBT lore = new ListNBT();
+            for (String s : leader.getGymDisplayLore()) {
+
+                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+
+            }
+            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(""))));
+            List<String> itemLore = AccountHandler.hasBeatenGym(player, region, leader) ? ConfigGetters.badgeCaseHasBeatenLore : ConfigGetters.badgeCaseHasNotBeatenLore;
             for (String s : itemLore) {
 
                 lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));

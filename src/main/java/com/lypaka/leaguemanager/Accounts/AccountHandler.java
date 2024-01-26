@@ -7,10 +7,7 @@ import com.lypaka.leaguemanager.Leagues.GymLeader;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class AccountHandler {
 
@@ -30,7 +27,17 @@ public class AccountHandler {
     public static void removeAccount (ServerPlayerEntity player) {
 
         saveAccount(player);
-        accountMap.entrySet().removeIf(entry -> entry.getKey().toString().equalsIgnoreCase(player.getUniqueID().toString()));
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+
+                accountMap.entrySet().removeIf(entry -> entry.getKey().toString().equalsIgnoreCase(player.getUniqueID().toString()));
+
+            }
+
+        }, 1000);
 
     }
 

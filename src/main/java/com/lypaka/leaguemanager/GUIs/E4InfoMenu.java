@@ -39,7 +39,7 @@ public class E4InfoMenu {
 
         for (int i : ConfigGetters.e4BorderSlots) {
 
-            allGUISlots.remove(i);
+            allGUISlots.removeIf(e -> e == i);
             page.getTemplate().getSlot(i).setButton(
                     GooeyButton.builder()
                             .display(
@@ -53,26 +53,34 @@ public class E4InfoMenu {
         int index = 0;
         for (int i : allGUISlots) {
 
-            E4Member e4Member = members.get(index);
-            index++;
-            ItemStack item = ItemStackBuilder.buildFromStringID(e4Member.getDisplayID()).setDisplayName(FancyText.getFormattedText(e4Member.getDisplayName()));
+            try {
 
-            List<String> itemLore = AccountHandler.hasBeatenMember(player, region, e4Member) ? ConfigGetters.e4HasBeatenLore : ConfigGetters.e4HasNotBeatenLore;
-            ListNBT lore = new ListNBT();
-            for (String s : e4Member.getLore()) {
+                E4Member e4Member = members.get(index);
+                index++;
+                ItemStack item = ItemStackBuilder.buildFromStringID(e4Member.getDisplayID()).setDisplayName(FancyText.getFormattedText(e4Member.getDisplayName()));
 
-                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+                List<String> itemLore = AccountHandler.hasBeatenMember(player, region, e4Member) ? ConfigGetters.e4HasBeatenLore : ConfigGetters.e4HasNotBeatenLore;
+                ListNBT lore = new ListNBT();
+                for (String s : e4Member.getLore()) {
+
+                    lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+
+                }
+                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(""))));
+                for (String s : itemLore) {
+
+                    lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+
+                }
+                item.getOrCreateChildTag("display").put("Lore", lore);
+
+                page.getTemplate().getSlot(i).setButton(GooeyButton.builder().display(item).build());
+
+            } catch (NullPointerException | IndexOutOfBoundsException er) {
+
+                // do nothing, we either have an issue or we're out of members to show
 
             }
-            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(""))));
-            for (String s : itemLore) {
-
-                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
-
-            }
-            item.getOrCreateChildTag("display").put("Lore", lore);
-
-            page.getTemplate().getSlot(i).setButton(GooeyButton.builder().display(item).build());
 
         }
 

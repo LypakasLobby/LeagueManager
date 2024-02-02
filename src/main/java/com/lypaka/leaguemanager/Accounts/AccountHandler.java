@@ -15,12 +15,17 @@ public class AccountHandler {
 
     public static void createAccount (ServerPlayerEntity player) throws ObjectMappingException {
 
+        System.out.println("creating account object for player " + player.getName().getString() + " / " + player.getUniqueID().toString());
         LeagueManager.playerConfigManager.loadPlayer(player.getUniqueID());
         Map<String, List<String>> beatenE4Members = LeagueManager.playerConfigManager.getPlayerConfigNode(player.getUniqueID(), "Beaten-E4-Members").getValue(new TypeToken<Map<String, List<String>>>() {});
+        System.out.println("e4 map == " + beatenE4Members);
         Map<String, List<String>> beatenGyms = LeagueManager.playerConfigManager.getPlayerConfigNode(player.getUniqueID(), "Beaten-Gyms").getValue(new TypeToken<Map<String, List<String>>>() {});
+        System.out.println("gym map == " + beatenGyms);
 
         Account account = new Account(player, beatenE4Members, beatenGyms);
+        System.out.println("account object created --> " + account);
         accountMap.put(player.getUniqueID(), account);
+        System.out.println("put " + player.getUniqueID().toString() + " in the map with account object " + account);
 
     }
 
@@ -34,6 +39,7 @@ public class AccountHandler {
             public void run() {
 
                 accountMap.entrySet().removeIf(entry -> entry.getKey().toString().equalsIgnoreCase(player.getUniqueID().toString()));
+                System.out.println("player " + player.getName().getString() + " / " + player.getUniqueID().toString() + " has been removed from the account map");
 
             }
 
@@ -43,7 +49,10 @@ public class AccountHandler {
 
     public static void saveAccount (ServerPlayerEntity player) {
 
+        System.out.println("player == " + player);
+        System.out.println("uuid == " + player.getUniqueID());
         Account account = accountMap.get(player.getUniqueID());
+        System.out.println("account == " + account);
         LeagueManager.playerConfigManager.getPlayerConfigNode(player.getUniqueID(), "Beaten-E4-Members").setValue(account.getBeatenE4Members());
         LeagueManager.playerConfigManager.getPlayerConfigNode(player.getUniqueID(), "Beaten-Gyms").setValue(account.getBeatenGyms());
         LeagueManager.playerConfigManager.savePlayer(player.getUniqueID());
@@ -73,6 +82,7 @@ public class AccountHandler {
     public static boolean hasBeatenGym (ServerPlayerEntity player, String region, GymLeader leader) {
 
         Account account = accountMap.get(player.getUniqueID());
+        if (!account.getBeatenGyms().containsKey(region)) return false;
         return account.getBeatenGyms().get(region).contains(leader.getGymName());
 
     }

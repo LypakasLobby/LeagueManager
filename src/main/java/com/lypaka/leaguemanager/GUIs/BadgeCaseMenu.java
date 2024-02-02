@@ -31,7 +31,7 @@ public class BadgeCaseMenu {
                 .build();
 
         List<Integer> allGUISlots = new ArrayList<>(ConfigGetters.badgeCaseRows * 9);
-        for (int i = 0; i < ConfigGetters.badgeCaseRows; i++) {
+        for (int i = 0; i < ConfigGetters.badgeCaseRows * 9; i++) {
 
             allGUISlots.add(i);
 
@@ -39,7 +39,7 @@ public class BadgeCaseMenu {
 
         for (int i : ConfigGetters.badgeCaseBorderSlots) {
 
-            allGUISlots.remove(i);
+            allGUISlots.removeIf(e -> e == i);
             page.getTemplate().getSlot(i).setButton(
                     GooeyButton.builder()
                             .display(
@@ -52,26 +52,34 @@ public class BadgeCaseMenu {
         int index = 0;
         for (int i : allGUISlots) {
 
-            GymLeader leader = leaders.get(index);
-            index++;
-            ItemStack badge = leader.getBadge().getBadgeItem();
+            try {
 
-            ListNBT lore = new ListNBT();
-            for (String s : leader.getGymDisplayLore()) {
+                GymLeader leader = leaders.get(index);
+                index++;
+                ItemStack badge = leader.getBadge().getBadgeItem();
 
-                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+                ListNBT lore = new ListNBT();
+                for (String s : leader.getGymDisplayLore()) {
+
+                    lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+
+                }
+                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(""))));
+                List<String> itemLore = AccountHandler.hasBeatenGym(player, region, leader) ? ConfigGetters.badgeCaseHasBeatenLore : ConfigGetters.badgeCaseHasNotBeatenLore;
+                for (String s : itemLore) {
+
+                    lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+
+                }
+                badge.getOrCreateChildTag("display").put("Lore", lore);
+
+                page.getTemplate().getSlot(i).setButton(GooeyButton.builder().display(badge).build());
+
+            } catch (NullPointerException | IndexOutOfBoundsException er) {
+
+                // do nothing. We either have a problem or we have run out of badges to show
 
             }
-            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(""))));
-            List<String> itemLore = AccountHandler.hasBeatenGym(player, region, leader) ? ConfigGetters.badgeCaseHasBeatenLore : ConfigGetters.badgeCaseHasNotBeatenLore;
-            for (String s : itemLore) {
-
-                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
-
-            }
-            badge.getOrCreateChildTag("display").put("Lore", lore);
-
-            page.getTemplate().getSlot(i).setButton(GooeyButton.builder().display(badge).build());
 
         }
 

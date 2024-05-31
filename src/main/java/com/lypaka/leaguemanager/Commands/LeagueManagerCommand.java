@@ -20,6 +20,7 @@ public class LeagueManagerCommand {
         new BadgeCaseCommand(event.getDispatcher());
         new E4InfoCommand(event.getDispatcher());
         new ReloadCommand(event.getDispatcher());
+        new ViewBadgesCommand(event.getDispatcher());
 
         ConfigCommand.register(event.getDispatcher());
 

@@ -62,7 +62,17 @@ public class AccountHandler {
     public static void markGymBeaten (ServerPlayerEntity player, String region, String name) {
 
         Account account = accountMap.get(player.getUniqueID());
-        List<String> gyms = account.getBeatenGyms().get(region);
+        List<String> gyms = new ArrayList<>();
+        //List<String> gyms = account.getBeatenGyms().get(region);
+        if (account.getBeatenGyms().containsKey(region)) {
+
+            gyms = account.getBeatenGyms().get(region);
+
+        } else {
+
+            gyms = new ArrayList<>();
+
+        }
         gyms.add(name);
         account.getBeatenGyms().put(region, gyms);
         saveAccount(player);

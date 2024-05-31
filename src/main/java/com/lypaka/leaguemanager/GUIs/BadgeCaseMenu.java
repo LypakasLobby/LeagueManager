@@ -21,6 +21,72 @@ import java.util.List;
 
 public class BadgeCaseMenu {
 
+    public static void openPlayersMenu (ServerPlayerEntity viewer, ServerPlayerEntity target, String region) {
+
+        List<GymLeader> leaders = LeagueHandler.gymsInOrder.get(region);
+        ChestTemplate template = ChestTemplate.builder(ConfigGetters.badgeCaseRows).build();
+        GooeyPage page = GooeyPage.builder()
+                .template(template)
+                .title(FancyText.getFormattedString(ConfigGetters.badgeCaseDisplayName.replace("%region%", region)))
+                .build();
+
+        List<Integer> allGUISlots = new ArrayList<>(ConfigGetters.badgeCaseRows * 9);
+        for (int i = 0; i < ConfigGetters.badgeCaseRows * 9; i++) {
+
+            allGUISlots.add(i);
+
+        }
+
+        for (int i : ConfigGetters.badgeCaseBorderSlots) {
+
+            allGUISlots.removeIf(e -> e == i);
+            page.getTemplate().getSlot(i).setButton(
+                    GooeyButton.builder()
+                            .display(
+                                    ItemStackBuilder.buildFromStringID(ConfigGetters.badgeCaseBorderID).setDisplayName(FancyText.getFormattedText(""))
+                            )
+                            .build()
+            );
+
+        }
+        int index = 0;
+        for (int i : allGUISlots) {
+
+            try {
+
+                GymLeader leader = leaders.get(index);
+                index++;
+                ItemStack badge = leader.getBadge().getBadgeItem();
+
+                ListNBT lore = new ListNBT();
+                for (String s : leader.getGymDisplayLore()) {
+
+                    lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+
+                }
+                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(""))));
+                List<String> itemLore = AccountHandler.hasBeatenGym(target, region, leader) ? ConfigGetters.badgeCaseHasBeatenLore : ConfigGetters.badgeCaseHasNotBeatenLore;
+                for (String s : itemLore) {
+
+                    lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s))));
+
+                }
+                badge.getOrCreateChildTag("display").put("Lore", lore);
+
+                page.getTemplate().getSlot(i).setButton(GooeyButton.builder().display(badge).build());
+
+            } catch (NullPointerException | IndexOutOfBoundsException er) {
+
+                // do nothing. We either have a problem or we have run out of badges to show
+
+            }
+
+        }
+
+        UIManager.openUIForcefully(viewer, page);
+
+    }
+
     public static void openMenu (ServerPlayerEntity player, String region) {
 
         List<GymLeader> leaders = LeagueHandler.gymsInOrder.get(region);
